@@ -4,17 +4,15 @@ on:
   push:
     branches:
       - main  # 指定触发此工作流的分支
-  pull_request:
-    branches:
-      - main  # 指定触发此工作流的PR目标分支
+
 
 jobs:
   run-ollama:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    # - name: Checkout repository
+    #   uses: actions/checkout@v3
 
     - name: Install Dependencies
       run: |
@@ -32,17 +30,19 @@ jobs:
 
     - name: Download Qwen Model
       run: |
-        ollama run qwen2.5:1.5b
-
+        # ollama run qwen2.5:1.5b
+        ollama run qwen2.5:0.5b
+        
     - name: Make Non-Streaming Request
       run: |
         URL="http://localhost:11434/api/generate"
         DATA='{
-          "model": "qwen2.5:1.5b",
+          "model": "qwen2.5:0.5b",
+          "stream": false,
           "prompt": "你是谁。"
         }'
         RESPONSE=$(curl -s -X POST $URL -H "Content-Type: application/json" -d "$DATA")
-        echo "Response: $RESPONSE"
+        # echo "Response: $RESPONSE"
         # 解析并打印返回的消息
         MESSAGE=$(echo $RESPONSE | jq -r '.response')
         echo "Message: $MESSAGE"
