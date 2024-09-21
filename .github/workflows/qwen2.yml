@@ -35,17 +35,17 @@ jobs:
         
     - name: Make Non-Streaming Request
       run: |
-        URL="http://localhost:11434/api/generate"
+        URL="http://localhost:11434/api/chat"
         DATA='{
           "model": "qwen2.5:1.5b",
           "stream": false,
           "messages": [
-            { "role": "user", "content": "你的身份是全能AI助理，你的名字叫缤纷，可以为用户解决任何疑问。" },
+            { "role": "system", "content": "你的身份是全能AI助理，你的名字叫缤纷，可以为用户解决任何疑问。" },
             { "role": "user", "content": "你是谁?" }
           ]
         }'
         RESPONSE=$(curl -s -X POST $URL -H "Content-Type: application/json" -d "$DATA")
         echo "Response: $RESPONSE"
         # 解析并打印返回的消息
-        MESSAGE=$(echo $RESPONSE | jq -r '.response')
+        MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
         echo "Message: $MESSAGE"
