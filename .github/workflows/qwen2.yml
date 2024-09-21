@@ -30,16 +30,20 @@ jobs:
 
     - name: Download Qwen Model
       run: |
-        # ollama run qwen2.5:1.5b
-        ollama run qwen2.5:0.5b
+        ollama run qwen2.5:1.5b
+        # ollama run qwen2.5:0.5b
         
     - name: Make Non-Streaming Request
       run: |
         URL="http://localhost:11434/api/generate"
         DATA='{
-          "model": "qwen2.5:0.5b",
+          "model": "qwen2.5:1.5b",
           "stream": false,
-          "prompt": "你是谁。"
+          # "prompt": "你是谁。"
+          "messages": [
+            { "role": "user", "content": "你的身份是全能AI助理，你的名字叫缤纷，可以为用户解决任何疑问。" },
+            { "role": "user", "content": "你是谁?" },
+          ]
         }'
         RESPONSE=$(curl -s -X POST $URL -H "Content-Type: application/json" -d "$DATA")
         # echo "Response: $RESPONSE"
