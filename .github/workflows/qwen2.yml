@@ -4,16 +4,18 @@ on:
   push:
     branches:
       - main  # 指定触发此工作流的分支
-
-
+      
 jobs:
   run-ollama:
     runs-on: ubuntu-latest
 
     steps:
-    # - name: Checkout repository
-    #   uses: actions/checkout@v3
-
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
     - name: Install Dependencies
       run: |
         sudo apt-get update
@@ -26,37 +28,12 @@ jobs:
     - name: Start Ollama Service
       run: |
         nohup ollama serve &  # 使用nohup确保服务在后台持续运行
-        sleep 10  # 等待服务启动完成
+        sleep 3  # 等待服务启动完成
 
     - name: Download Qwen Model
       run: |
         ollama run qwen2.5:1.5b
         # ollama run qwen2.5:0.5b
         
-    - name: Make Non-Streaming Request
-      run: |
-        response1=$(curl -s -H "Cookie: f_city=%E5%8C%97%E4%BA%AC%7C101280102%7C" -H "Host: d1.weather.com.cn" -H "Referer: http://www.weather.com.cn/" "https://d1.weather.com.cn/sk_2d/101280102.html")
-        response2=$(curl -s -H "Cookie: f_city=%E5%8C%97%E4%BA%AC%7C101280102%7C" -H "Host: d1.weather.com.cn" -H "Referer: http://www.weather.com.cn/" "https://d1.weather.com.cn/dingzhi/101280102.html")
-        
-        # 拼接字符串
-        combined_response="$response1\n$response2"
-        
-        URL="http://localhost:11434/api/chat"
-        DATA='{
-          "model": "qwen2.5:1.5b",
-          "stream": false,
-          "messages": [
-            { "role": "system", "content": "你的身份是全能AI助理，你的名字叫缤纷，可以为用户解决任何疑问。" },
-            { "role": "user", "content": "'"$combined_response"'\n请根据上面两段数据，写一段天气预报，并提供贴心的提示" }
-          ]
-        }'
-        
-        # 发送POST请求
-        RESPONSE=$(curl -s -X POST $URL -H "Content-Type: application/json" -d "$DATA")
-        
-        # 打印响应
-        echo "Response: $RESPONSE"
-        
-        # 解析并打印返回的消息
-        MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
-        echo "Message: $MESSAGE"
+    - name: Run main.py
+      run: python main.py
