@@ -35,13 +35,15 @@ jobs:
         
     - name: Make Non-Streaming Request
       run: |
+        response1=$(curl -s -H "Cookie: f_city=%E5%8C%97%E4%BA%AC%7C101280102%7C" -H "Host: d1.weather.com.cn" -H "Referer: http://www.weather.com.cn/" "https://d1.weather.com.cn/sk_2d/101280102.html")
+        response2=$(curl -s -H "Cookie: f_city=%E5%8C%97%E4%BA%AC%7C101280102%7C" -H "Host: d1.weather.com.cn" -H "Referer: http://www.weather.com.cn/" "https://d1.weather.com.cn/dingzhi/101280102.html")
         URL="http://localhost:11434/api/chat"
         DATA='{
           "model": "qwen2.5:1.5b",
           "stream": false,
           "messages": [
             { "role": "system", "content": "你的身份是全能AI助理，你的名字叫缤纷，可以为用户解决任何疑问。" },
-            { "role": "user", "content": "你是谁?" }
+            { "role": "user", "content": response1+response2+"\n请根据上面两段数据，写一段天气预报，并提供贴心的提示" }
           ]
         }'
         RESPONSE=$(curl -s -X POST $URL -H "Content-Type: application/json" -d "$DATA")
