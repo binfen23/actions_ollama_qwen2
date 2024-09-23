@@ -56,7 +56,7 @@ data = {
     "stream": False,
     "messages": [
         {"role": "system", "content": "你的身份是全能AI助理，你的名字叫缤纷，可以为用户解决任何疑问。"},
-        {"role": "user", "content": f"{data1+data2}\n请根据这段数据，不用回应我，直接写一段专业天气预报，并提供贴心的提示"}
+        {"role": "user", "content": f"{data1+data2} 请根据这段数据，不用回应我，直接写一段专业天气预报，并提供贴心的提示"}
     ]
 }
 
