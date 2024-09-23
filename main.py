@@ -31,7 +31,7 @@ with urllib.request.urlopen(req) as response:
     fx = cjson["weatherinfo"]["wd"]
     fs = cjson["weatherinfo"]["ws"]
     
-    data1 = f"今天天气预报：城市:{cs} 温度:{wd} 天气:{tq} 风向:{fx} 风速:{fs}"
+    data1 = f"今天天气预报：城市:{cs} 平均温度:{wd} 预计天气:{tq} 风向:{fx} 风速:{fs}"
 
 # 创建Request对象
 req2 = urllib.request.Request(url2, headers=headers)
@@ -41,15 +41,12 @@ with urllib.request.urlopen(req2) as response:
     content = response.read().decode('utf-8')
     c1 = str(content).split("=")[1]
     cjson = json.loads(c1)
-    cs = cjson["cityname"]
     wd = cjson["temp"]
     tq = cjson["weather"]
-    fx = cjson["WD"]
-    fs = cjson["WS"]
     sd = cjson["SD"]
     pm25 = cjson["aqi_pm25"]
     
-    data2 = f"\n现在天气预报: 城市:{cs} 温度:{wd}℃ 天气:{tq} 风向:{fx} 风速:{fs} 湿度:{sd} PM2.5:{pm25}"
+    data2 = f" 现在温度:{wd}℃ 现在天气:{tq} 湿度:{sd} PM2.5:{pm25}"
 
 
 # 定义请求的URL和数据
@@ -59,7 +56,7 @@ data = {
     "stream": False,
     "messages": [
         {"role": "system", "content": "你的身份是全能AI助理，你的名字叫缤纷，可以为用户解决任何疑问。"},
-        {"role": "user", "content": f"{data1+data2}\n请根据上面两段数据，写一段天气预报，并提供贴心的提示"}
+        {"role": "user", "content": f"{data1+data2}\n请根据这段数据，不用回应我，直接写一段专业天气预报，并提供贴心的提示"}
     ]
 }
 
